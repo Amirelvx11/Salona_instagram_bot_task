@@ -1,18 +1,22 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float
-from sqlalchemy.orm import declarative_base, sessionmaker
+import sqlite3
+from pathlib import Path
 
-DB_URL = "sqlite:///app_data.sqlite"
-engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
-Base = declarative_base()
-SessionLocal = sessionmaker(bind=engine)
+DB_PATH = Path(__file__).resolve().parent.parent / "db" / "app_data.sqlite"
 
-class Product(Base):
-    __tablename__ = "products"
+def get_connection():
+    """Establish SQLite connection and return Row factory cursor."""
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    description = Column(String)
-    price = Column(Float)
-
-def init_db():
-    Base.metadata.create_all(bind=engine)
+def search_products(query: str):
+    """Search products by name or description with partial match."""
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM products WHERE name LIKE ? OR description LIKE ? LIMIT 5",
+        (f"%{query}%", f"%{query}%"),
+    )
+    rows = cur.fetchall()
+    conn.close()
+    return rows
