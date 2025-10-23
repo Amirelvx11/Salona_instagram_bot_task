@@ -10,7 +10,6 @@ venv/
 # Secrets & configs
 .env
 *.env
-*.env.*
 
 # Database & data (for test level we dont need to ignore it!)
 # app_data.sqlite
