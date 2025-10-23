@@ -12,10 +12,10 @@ venv/
 *.env
 *.env.*
 
-# Database & data
-app_data.sqlite
-*.sqlite
-*.db
+# Database & data (for test level we dont need to ignore it!)
+# app_data.sqlite
+# *.sqlite
+# *.db
 
 # IDE / OS files
 .vscode/
